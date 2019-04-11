@@ -1,0 +1,5 @@
+1. Can select a question DONE
+2. Can deselect a question DONE
+3. Player buzzes in before a question is selected -> INVALID DONE
+4. Player buzzes in after a question is selected and gets it right -> CORRECT, player score increased by value DONE
+5. Player buzzes in after a question is selected and gets it wrong -> INCORRECT, player score lowered by value DONE
