@@ -7,13 +7,14 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 import static spark.Spark.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("Started game");
-        port(80);
+        port(8080);
         staticFileLocation("public/");
         webSocket("/play", PlayerWebSocketHandler.class);
         webSocket("/admin", AdminWebSocketHandler.class);

@@ -1,79 +1,78 @@
 //Establish the WebSocket connection and set up event handlers
 var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/play");
+var buzzInterval;
 webSocket.onmessage = function (msg) {
-id("body").style.backgroundColor = "blue";
-updateChat(msg);
+//    document.body.style.backgroundColor = "blue";
+    update(msg.data);
 };
+
 webSocket.onopen = function () {
-    var name = prompt("Enter your name:");
-    if(name){
-        console.log("Name change");
-        sendMessage("name:" + name);
-    }
-}
+    document.body.style.backgroundColor = "black";
+    setStatus("Locked");
+};
+
 webSocket.onclose = function () {
-NotificationManager.create("Game ended", "Lost connection to game host");
-id("body").style.backgroundColor = "red";
-id("question").innerHTML = "No connection to game host"
+    document.body.style.backgroundColor = "red";
+    setStatus("Disconnected");
 };
 
 
 //Send message if enter is pressed in the input field
-id("body").addEventListener("keypress", function (e) {
+document.body.addEventListener("keypress", function (e) {
     if (e.keyCode === 13) { sendMessage("buzz"); }
 });
 
 
-id("body").addEventListener("click", function (e) {
+document.body.addEventListener("click", function (e) {
     sendMessage("buzz");
 });
 
-id("body").addEventListener("touchstart", function (e) {
+document.body.addEventListener("touchstart", function (e) {
     sendMessage("buzz");
 });
 
 
-//Send a message if it's not empty, then clear the input field
 function sendMessage(message) {
     if (message !== "") {
         webSocket.send(message);
     }
 }
 
-//Update the chat-panel, and the list of connected users
-function updateChat(msg) {
-    var data = JSON.parse(msg.data);
-    if(data.message && data.message != ""){
-        NotificationManager.clear();
-        NotificationManager.create(data.sender, data.message);
-    }
-    if(data.question){
-        id("question").innerHTML = data.question;
-    } else {
-        id("question").innerHTML = "No question chosen";
-    }
-    var turn = data.turn == data.name;
-    if(turn){
-        id("body").style.backgroundColor = "green";
-        id("name").innerHTML = "Your turn! <br>" + data.name;
-    } else {
-        id("name").innerHTML = data.name;
-    }
-    id("score").innerHTML = "$" + data.score;
-    id("score").style.height = (id("score").clientWidth - 48) + "px";
-    id("score").style.lineHeight = id("score").style.height;
-//    insert("chat", data.message + "<br>");
-
-    var numConnectedUsers = data.userlist.length;
-    id("usercount").innerHTML = numConnectedUsers;
+function setStatus(text){
+    document.getElementById('status').innerHTML = text;
 }
 
-//Helper function for inserting HTML as the first child of an element
-function insert(targetId, message) {
-    id(targetId).insertAdjacentHTML("afterbegin", message);
+function update(msg) {
+    if (msg == "unlocked"){
+        document.body.style.backgroundColor = "blue";
+        setStatus("Unlocked");
+        if (buzzInterval){
+            clearInterval(buzzInterval);
+        }
+    } else if (msg == "locked"){
+        document.body.style.backgroundColor = "black";
+        setStatus("Locked");
+        if (buzzInterval){
+            clearInterval(buzzInterval);
+        }
+    } else if (msg === "buzz"){
+        if (buzzInterval){
+            clearInterval(buzzInterval);
+        }
+        document.body.style.backgroundColor = "green";
+        var timeLeft = 10;
+        setStatus("Buzzed in: " + timeLeft + "s");
+        buzzInterval = setInterval(function(){
+            timeLeft--;
+            setStatus("Buzzed in: " + timeLeft + "s");
+        }, 1000);
+
+    } else if (msg == "unbuzz"){
+        document.body.style.backgroundColor = "blue";
+        setStatus("Unlocked");
+        if (buzzInterval){
+            clearInterval(buzzInterval);
+        }
+    }
 }
 
-//Helper function for selecting element by id
-function id(id) {
-    return document.getElementById(id);
-}
