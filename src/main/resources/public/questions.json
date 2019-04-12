@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "category": "About UPE",
+      "questions": [
+        "The URL of WPI UPE website is this.",
+        "UPE was founded in this year.",
+        "To become a member of UPE, you must meet one of these conditions. Name at least one.",
+        "UPE hosts this event at the end of every term, before finals.",
+        "This condition must be met to maintain active status in WPI's UPE chapter."
+      ]
+    },
+    {
+      "category": "Computer Science",
+      "questions": [
+        "BST",
+        "ASCII",
+        "BIOS",
+        "IBM",
+        "ALU"
+      ]
+    },
+    {
+      "category": "Random",
+      "questions": [
+        "The colors on Google's logo are these colors, in this order.",
+        "This is the 4th most spoken language in the world.",
+        "Leaves reflect green instead of converting it to energy; the most abundant color emitted from the sun is this color.",
+        "This is the number of canine teeth an average human has.",
+        "In New England, trees have more growth on the side facing this ordinal direction."
+      ]
+    },
+    {
+      "category": "Career Fair",
+      "questions": [
+        "This is the date of the career fair this term.",
+        "You can pre-register for the career fair on these two days.",
+        "The career fair is in this building.",
+        "About this many companies attend the career fair.",
+        "You can find information about jobs at the career fair on this website."
+      ]
+    },
+    {
+      "category": "Jobs in CS",
+      "questions": [
+        "isyurccetreyb",
+        "wsoertfa ngereine",
+        "tada tscneisit",
+        "tyaluqi csrnausea irneneeg",
+        "ti usprpto"
+      ]
+    },
+    {
+      "category": "ID the Programming Language",
+      "questions": [
+        "public static void main(String args[]){}",
+        "if(typeof variable !== 'undefined') {}",
+        "#include<cstdlib>",
+        "Stack <AType> stack(5);",
+        "enum Direction {NORTH, SOUTH, EAST, WEST; };"
+      ]
+    }
+  ]
+}
