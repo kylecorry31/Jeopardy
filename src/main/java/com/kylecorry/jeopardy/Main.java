@@ -14,7 +14,7 @@ import static spark.Spark.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         System.out.println("Started game");
-        port(8080);
+        port(80);
         staticFileLocation("public/");
         webSocket("/play", PlayerWebSocketHandler.class);
         webSocket("/admin", AdminWebSocketHandler.class);
