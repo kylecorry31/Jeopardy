@@ -1,1 +1,1 @@
-web: java -jar Jeopardy.jar
+web: java -Dserver.port=$PORT -jar build/libs/Jeopardy-1.0.jar

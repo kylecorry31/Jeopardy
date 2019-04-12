@@ -16,7 +16,7 @@ public class Main {
         System.out.println("Started game");
         String port = System.getProperty("server.port");
         if (port == null) {
-            port(80);
+            port(8080);
         } else {
             port(Integer.valueOf(port));
         }
