@@ -1,6 +1,7 @@
 //Establish the WebSocket connection and set up event handlers
 var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/play");
 var buzzInterval;
+var answerTime = 6;
 webSocket.onmessage = function (msg) {
 //    document.body.style.backgroundColor = "blue";
     update(msg.data);
@@ -60,7 +61,7 @@ function update(msg) {
             clearInterval(buzzInterval);
         }
         document.body.style.backgroundColor = "green";
-        var timeLeft = 10;
+        var timeLeft = answerTime;
         setStatus("Buzzed in: " + timeLeft + "s");
         buzzInterval = setInterval(function(){
             timeLeft--;

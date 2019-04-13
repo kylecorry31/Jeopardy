@@ -2,6 +2,7 @@
 var buzzInterval;
 var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/admin");
 var locked = true;
+var answerTime = 6;
 webSocket.onmessage = function (msg) {
     var data = msg.data;
     if(data === 'buzz'){
@@ -9,7 +10,7 @@ webSocket.onmessage = function (msg) {
         if (buzzInterval){
             clearInterval(buzzInterval);
         }
-        var timeLeft = 10;
+        var timeLeft = answerTime;
         setStatus("Buzzed in: " + timeLeft + "s");
         buzzInterval = setInterval(function(){
             timeLeft--;
@@ -28,6 +29,13 @@ webSocket.onmessage = function (msg) {
             clearInterval(buzzInterval);
         }
         setStatus('Unlocked');
+    } else if (data == 'locked'){
+        locked = true;
+        document.body.style.backgroundColor = 'black';
+        if (buzzInterval){
+          clearInterval(buzzInterval);
+        }
+        setStatus('Locked');
     }
 };
 
@@ -54,14 +62,15 @@ document.body.addEventListener("click", function (e) {
     toggleLock();
 });
 
-document.body.addEventListener("touchstart", function (e) {
-    toggleLock();
-});
-
-
-document.body.addEventListener("touchend", function (e) {
-    toggleLock();
-});
+// Uncomment for iPhone support (becomes janky)
+//document.body.addEventListener("touchstart", function (e) {
+//    toggleLock();
+//});
+//
+//
+//document.body.addEventListener("touchend", function (e) {
+//    toggleLock();
+//});
 
 function setStatus(text){
     document.getElementById('status').innerHTML = text;
