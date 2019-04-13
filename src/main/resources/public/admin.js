@@ -58,6 +58,11 @@ document.body.addEventListener("touchstart", function (e) {
     toggleLock();
 });
 
+
+document.body.addEventListener("touchend", function (e) {
+    toggleLock();
+});
+
 function setStatus(text){
     document.getElementById('status').innerHTML = text;
 }
