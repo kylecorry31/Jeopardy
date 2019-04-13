@@ -48,6 +48,9 @@ public class WebSocketBuzzer implements Buzzer {
 
     private void send(String message){
         try {
+            if (!session.isOpen()){
+                return;
+            }
             session.getRemote().sendString(message);
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,7 +69,7 @@ public class WebSocketBuzzer implements Buzzer {
         if (!(o instanceof WebSocketBuzzer))
             return false;
         WebSocketBuzzer buzzer = (WebSocketBuzzer) o;
-        return buzzer.state == state && Objects.equals(session, buzzer.session);
+        return buzzer.session.equals(session);
     }
 
     @Override

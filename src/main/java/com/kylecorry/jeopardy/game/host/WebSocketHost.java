@@ -48,6 +48,9 @@ public class WebSocketHost implements Host {
 
     private void send(String message){
         try {
+            if (!session.isOpen()){
+                return;
+            }
             session.getRemote().sendString(message);
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,7 +69,7 @@ public class WebSocketHost implements Host {
         if (!(o instanceof WebSocketHost))
             return false;
         WebSocketHost host = (WebSocketHost) o;
-        return host.state == state && Objects.equals(session, host.session);
+        return Objects.equals(session, host.session);
     }
 
     @Override
