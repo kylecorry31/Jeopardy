@@ -35,7 +35,7 @@ public class BuzzerWebSocketHandler {
     public void onMessage(Session user, String message) {
         if (message.equalsIgnoreCase("buzz")){
             System.out.println("Someone buzzed in");
-            game.onBuzzIn(makeWebSocketBuzzer(user));
+            game.buzzIn(makeWebSocketBuzzer(user));
         }
     }
 }

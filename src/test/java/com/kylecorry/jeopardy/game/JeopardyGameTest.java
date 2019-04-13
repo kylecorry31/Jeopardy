@@ -1,14 +1,15 @@
 package com.kylecorry.jeopardy.game;
 
 import com.kylecorry.jeopardy.game.buzzer.Buzzer;
-import com.kylecorry.jeopardy.game.buzzer.BuzzerState;
+import com.kylecorry.jeopardy.game.buzzer.MockBuzzer;
 import com.kylecorry.jeopardy.game.host.Host;
 import com.kylecorry.jeopardy.game.host.HostState;
+import com.kylecorry.jeopardy.game.host.MockHost;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static com.kylecorry.jeopardy.game.buzzer.BuzzerState.*;
 
 class JeopardyGameTest {
 
@@ -21,177 +22,176 @@ class JeopardyGameTest {
 
     @Test
     void canAddBuzzers(){
-        Buzzer buzzer = mock(Buzzer.class);
+        Buzzer buzzer = new MockBuzzer();
         game.addBuzzer(buzzer);
-        verify(buzzer).setState(BuzzerState.INACTIVE);
+        assertEquals(INACTIVE, buzzer.getState());
     }
 
     @Test
     void canRemoveBuzzers(){
-        Buzzer buzzer = mock(Buzzer.class);
+        Buzzer buzzer = new MockBuzzer();
         game.addBuzzer(buzzer);
         game.removeBuzzer(buzzer);
-        verify(buzzer).setState(BuzzerState.DISCONNECTED);
+        assertEquals(DISCONNECTED, buzzer.getState());
     }
 
     @Test
     void canAddHost(){
-        Host host = mock(Host.class);
+        Host host = new MockHost();
         game.addHost(host);
-        verify(host).setState(HostState.LOCKED);
+        assertEquals(HostState.LOCKED, host.getState());
     }
 
     @Test
     void canRemoveHost(){
-        Host host = mock(Host.class);
+        Host host = new MockHost();
         game.addHost(host);
         game.removeHost(host);
-        verify(host).setState(HostState.DISCONNECTED);
+        assertEquals(HostState.DISCONNECTED, host.getState());
     }
 
     @Test
     void notifiesInitialState(){
-        Buzzer buzzer = mock(Buzzer.class);
-        Host host = mock(Host.class);
-        game.onUnlockBuzzers();
+        Buzzer buzzer = new MockBuzzer();
+        Host host = new MockHost();
+        game.unlockBuzzers();
         game.addBuzzer(buzzer);
         game.addHost(host);
-        verify(buzzer).setState(BuzzerState.ACTIVE);
-        verify(host).setState(HostState.UNLOCKED);
+        assertEquals(ACTIVE, buzzer.getState());
+        assertEquals(HostState.UNLOCKED, host.getState());
         game.removeHost(host);
-        game.onBuzzIn(buzzer);
+        game.buzzIn(buzzer);
         game.addHost(host);
-        verify(host).setState(HostState.PLAYER_BUZZED_IN);
+        assertEquals(HostState.PLAYER_BUZZED_IN, host.getState());
     }
 
     @Test
     void timerWorks(){
         game = new JeopardyGame(0);
-        Buzzer buzzer = mock(Buzzer.class);
+        Buzzer buzzer = new MockBuzzer();
         game.addBuzzer(buzzer);
-        game.onUnlockBuzzers();
-        game.onBuzzIn(buzzer);
+        game.unlockBuzzers();
+        game.buzzIn(buzzer);
         try {
             Thread.sleep(20);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        verify(buzzer, times(2)).setState(BuzzerState.ACTIVE);
-
+        assertEquals(ACTIVE, buzzer.getState());
     }
 
     @Test
     void hostIsNotified(){
-        Host host = mock(Host.class);
-        Buzzer buzzer = mock(Buzzer.class);
+        Host host = new MockHost();
+        Buzzer buzzer = new MockBuzzer();
         game.addBuzzer(buzzer);
         game.addHost(host);
-        game.onUnlockBuzzers();
-        verify(host).setState(HostState.UNLOCKED);
-        game.onBuzzIn(buzzer);
-        verify(host).setState(HostState.PLAYER_BUZZED_IN);
-        game.onLockBuzzers();
-        verify(host, times(2)).setState(HostState.LOCKED);
+        game.unlockBuzzers();
+        assertEquals(HostState.UNLOCKED, host.getState());
+        game.buzzIn(buzzer);
+        assertEquals(HostState.PLAYER_BUZZED_IN, host.getState());
+        game.lockBuzzers();
+        assertEquals(HostState.LOCKED, host.getState());
     }
 
     @Test
     void unaddedBuzzerCantBuzzIn(){
-        Buzzer buzzer = mock(Buzzer.class);
-        Buzzer buzzer2 = mock(Buzzer.class);
+        Buzzer buzzer = new MockBuzzer();
+        Buzzer buzzer2 = new MockBuzzer();
         game.addBuzzer(buzzer);
-        game.onUnlockBuzzers();
-        game.onBuzzIn(buzzer2);
-        verify(buzzer2, never()).setState(BuzzerState.BUZZED_IN);
-        verify(buzzer).setState(BuzzerState.ACTIVE);
+        game.unlockBuzzers();
+        game.buzzIn(buzzer2);
+        assertEquals(DISCONNECTED, buzzer2.getState());
+        assertEquals(ACTIVE, buzzer.getState());
     }
 
     @Test
     void canUnlockBuzzers(){
-        Buzzer buzzer = mock(Buzzer.class);
-        Buzzer buzzer2 = mock(Buzzer.class);
+        Buzzer buzzer = new MockBuzzer();
+        Buzzer buzzer2 = new MockBuzzer();
         game.addBuzzer(buzzer);
         game.addBuzzer(buzzer2);
-        game.onUnlockBuzzers();
-        verify(buzzer).setState(BuzzerState.ACTIVE);
-        verify(buzzer2).setState(BuzzerState.ACTIVE);
+        game.unlockBuzzers();
+        assertEquals(ACTIVE, buzzer.getState());
+        assertEquals(ACTIVE, buzzer2.getState());
     }
 
     @Test
     void canLockBuzzers(){
-        Buzzer buzzer = mock(Buzzer.class);
-        Buzzer buzzer2 = mock(Buzzer.class);
+        Buzzer buzzer = new MockBuzzer();
+        Buzzer buzzer2 = new MockBuzzer();
         game.addBuzzer(buzzer);
         game.addBuzzer(buzzer2);
-        game.onUnlockBuzzers();// Unlock them
-        game.onLockBuzzers(); // Then lock them
-        verify(buzzer, times(2)).setState(BuzzerState.INACTIVE);
-        verify(buzzer2, times(2)).setState(BuzzerState.INACTIVE);
+        game.unlockBuzzers();// Unlock them
+        game.lockBuzzers(); // Then lock them
+        assertEquals(INACTIVE, buzzer.getState());
+        assertEquals(INACTIVE, buzzer2.getState());
     }
 
     @Test
     void canBuzzIn(){
-        Buzzer buzzer = mock(Buzzer.class);
+        Buzzer buzzer = new MockBuzzer();
         game.addBuzzer(buzzer);
-        game.onUnlockBuzzers();
-        game.onBuzzIn(buzzer);
-        verify(buzzer).setState(BuzzerState.BUZZED_IN);
+        game.unlockBuzzers();
+        game.buzzIn(buzzer);
+        assertEquals(BUZZED_IN, buzzer.getState());
     }
 
     @Test
     void cantBuzzInWhileLocked(){
-        Buzzer buzzer = mock(Buzzer.class);
+        Buzzer buzzer = new MockBuzzer();
         game.addBuzzer(buzzer);
-        game.onBuzzIn(buzzer);
-        verify(buzzer).setState(BuzzerState.INACTIVE);
+        game.buzzIn(buzzer);
+        assertEquals(INACTIVE, buzzer.getState());
     }
 
     @Test
     void onlyOnePlayerCanBuzzInAtOnce(){
-        Buzzer buzzer = mock(Buzzer.class);
-        Buzzer buzzer2 = mock(Buzzer.class);
+        Buzzer buzzer = new MockBuzzer();
+        Buzzer buzzer2 = new MockBuzzer();
         game.addBuzzer(buzzer);
         game.addBuzzer(buzzer2);
-        game.onUnlockBuzzers();
-        game.onBuzzIn(buzzer);
-        verify(buzzer).setState(BuzzerState.BUZZED_IN);
-        verify(buzzer2, times(2)).setState(BuzzerState.INACTIVE);
+        game.unlockBuzzers();
+        game.buzzIn(buzzer);
+        assertEquals(BUZZED_IN, buzzer.getState());
+        assertEquals(INACTIVE, buzzer2.getState());
     }
 
     @Test
     void lockingEndsBeingBuzzedIn(){
-        Buzzer buzzer = mock(Buzzer.class);
+        Buzzer buzzer = new MockBuzzer();
         game.addBuzzer(buzzer);
-        game.onUnlockBuzzers();
-        game.onBuzzIn(buzzer);
-        game.onLockBuzzers();
-        verify(buzzer, times(2)).setState(BuzzerState.INACTIVE);
+        game.unlockBuzzers();
+        game.buzzIn(buzzer);
+        game.lockBuzzers();
+        assertEquals(INACTIVE, buzzer.getState());
     }
 
     @Test
     void unlocksWhenBuzzerExpired(){
-        Buzzer buzzer = mock(Buzzer.class);
-        Buzzer buzzer2 = mock(Buzzer.class);
+        Buzzer buzzer = new MockBuzzer();
+        Buzzer buzzer2 = new MockBuzzer();
         game.addBuzzer(buzzer);
         game.addBuzzer(buzzer2);
-        game.onUnlockBuzzers();
-        game.onBuzzIn(buzzer);
-        game.onBuzzExpired();
-        verify(buzzer, times(2)).setState(BuzzerState.ACTIVE);
-        verify(buzzer2, times(2)).setState(BuzzerState.ACTIVE);
+        game.unlockBuzzers();
+        game.buzzIn(buzzer);
+        game.buzzExpire();
+        assertEquals(ACTIVE, buzzer.getState());
+        assertEquals(ACTIVE, buzzer2.getState());
     }
 
     @Test
     void doesNothingWhenLockedAndBuzzExpires(){
-        Buzzer buzzer = mock(Buzzer.class);
-        Buzzer buzzer2 = mock(Buzzer.class);
+        Buzzer buzzer = new MockBuzzer();
+        Buzzer buzzer2 = new MockBuzzer();
         game.addBuzzer(buzzer);
         game.addBuzzer(buzzer2);
-        game.onUnlockBuzzers();
-        game.onBuzzIn(buzzer);
-        game.onLockBuzzers();
-        game.onBuzzExpired();
-        verify(buzzer, times(2)).setState(BuzzerState.INACTIVE);
-        verify(buzzer2, times(3)).setState(BuzzerState.INACTIVE);
+        game.unlockBuzzers();
+        game.buzzIn(buzzer);
+        game.lockBuzzers();
+        game.buzzExpire();
+        assertEquals(INACTIVE, buzzer.getState());
+        assertEquals(INACTIVE, buzzer2.getState());
     }
 
 }

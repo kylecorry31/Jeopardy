@@ -81,7 +81,7 @@ public class JeopardyGame {
      * Handles when a buzzers buzzes in
      * @param buzzer the buzzer session
      */
-    public synchronized void onBuzzIn(Buzzer buzzer){
+    public synchronized void buzzIn(Buzzer buzzer){
         if (gameState.isLocked() || gameState.isBuzzedIn() || !buzzers.contains(buzzer)){
             return;
         }
@@ -99,7 +99,7 @@ public class JeopardyGame {
         buzzExpirationTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                onBuzzExpired();
+                buzzExpire();
             }
         }, answerTime);
     }
@@ -107,7 +107,7 @@ public class JeopardyGame {
     /**
      * Handles when a buzzer's buzz expires
      */
-    public synchronized void onBuzzExpired(){
+    public synchronized void buzzExpire(){
         if (gameState.isLocked()){
             return;
         }
@@ -123,7 +123,7 @@ public class JeopardyGame {
     /**
      * Handles when the buzzers become locked
      */
-    public void onLockBuzzers(){
+    public void lockBuzzers(){
         gameState.setLocked(true);
         if (buzzExpirationTimer != null){
             buzzExpirationTimer.cancel();
@@ -137,7 +137,7 @@ public class JeopardyGame {
     /**
      * Handles when the buzzers unlock
      */
-    public void onUnlockBuzzers(){
+    public void unlockBuzzers(){
         gameState.setLocked(false);
         if (buzzExpirationTimer != null){
             buzzExpirationTimer.cancel();

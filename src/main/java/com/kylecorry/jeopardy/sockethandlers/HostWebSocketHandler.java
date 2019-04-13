@@ -34,10 +34,10 @@ public class HostWebSocketHandler {
     public void onMessage(Session user, String message) {
         if (message.equalsIgnoreCase("lock")){
             System.out.println("Buzzers locked");
-            game.onLockBuzzers();
+            game.lockBuzzers();
         } else if (message.equalsIgnoreCase("unlock")){
             System.out.println("Buzzers unlocked");
-            game.onUnlockBuzzers();
+            game.unlockBuzzers();
         }
     }
 }
