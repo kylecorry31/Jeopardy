@@ -1,0 +1,76 @@
+package com.kylecorry.jeopardy.game.buzzer;
+
+import com.kylecorry.jeopardy.game.WebSocketMessages;
+import org.eclipse.jetty.websocket.api.Session;
+
+import java.io.IOException;
+import java.util.Objects;
+
+/**
+ * A buzzer which uses a web socket
+ */
+public class WebSocketBuzzer implements Buzzer {
+
+    private Session session;
+    private BuzzerState state;
+
+    /**
+     * Default constructor
+     * @param session the web socket session
+     */
+    public WebSocketBuzzer(Session session) {
+        this.session = Objects.requireNonNull(session);
+        setState(BuzzerState.DISCONNECTED);
+    }
+
+    @Override
+    public void setState(BuzzerState state) {
+        this.state = state;
+        switch (state){
+            case ACTIVE:
+                send(WebSocketMessages.BUZZER_ACTIVATED);
+                break;
+            case INACTIVE:
+                send(WebSocketMessages.BUZZER_DEACTIVATED);
+                break;
+            case BUZZED_IN:
+                send(WebSocketMessages.BUZZER_BUZZED_IN);
+                break;
+            default:
+                send(WebSocketMessages.BUZZER_DISCONNECTED);
+        }
+    }
+
+    @Override
+    public BuzzerState getState() {
+        return state;
+    }
+
+    private void send(String message){
+        try {
+            session.getRemote().sendString(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(state, session);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof WebSocketBuzzer))
+            return false;
+        WebSocketBuzzer buzzer = (WebSocketBuzzer) o;
+        return buzzer.state == state && Objects.equals(session, buzzer.session);
+    }
+
+    @Override
+    public String toString() {
+        return "Web Socket Buzzer (" + state + ")";
+    }
+}

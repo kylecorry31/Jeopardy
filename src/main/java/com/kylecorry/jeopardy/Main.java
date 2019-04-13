@@ -1,5 +1,9 @@
 package com.kylecorry.jeopardy;
 
+import com.kylecorry.jeopardy.game.JeopardyGame;
+import com.kylecorry.jeopardy.sockethandlers.BuzzerWebSocketHandler;
+import com.kylecorry.jeopardy.sockethandlers.HostWebSocketHandler;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,20 +14,27 @@ import java.net.UnknownHostException;
 import static spark.Spark.*;
 
 public class Main {
+
+    private static final long ANSWER_TIME = 6;
+    private static final int DEFAULT_PORT = 8080;
+    private static final String HOST_ENDPOINT = "/admin";
+    private static final String BUZZER_ENDPOINT = "/play";
+    private static final String STATIC_WEB_FOLDER = "public/";
+
     public static void main(String[] args) {
         String port = System.getProperty("server.port");
         if (port == null) {
-            port(8080);
+            port(DEFAULT_PORT);
         } else {
             port(Integer.valueOf(port));
         }
 
-        staticFileLocation("public/");
-        JeopardyGame game = new JeopardyGame();
+        staticFileLocation(STATIC_WEB_FOLDER);
+        JeopardyGame game = new JeopardyGame(ANSWER_TIME);
         BuzzerWebSocketHandler buzzerWebSocketHandler = new BuzzerWebSocketHandler(game);
         HostWebSocketHandler hostWebSocketHandler = new HostWebSocketHandler(game);
-        webSocket("/play", buzzerWebSocketHandler);
-        webSocket("/admin", hostWebSocketHandler);
+        webSocket(BUZZER_ENDPOINT, buzzerWebSocketHandler);
+        webSocket(HOST_ENDPOINT, hostWebSocketHandler);
         init();
         System.out.println("Started game");
         System.out.println("Running publicly at: " + getPublicIPAddress());

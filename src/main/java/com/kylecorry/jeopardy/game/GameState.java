@@ -1,4 +1,4 @@
-package com.kylecorry.jeopardy;
+package com.kylecorry.jeopardy.game;
 
 /**
  * The state of the game
