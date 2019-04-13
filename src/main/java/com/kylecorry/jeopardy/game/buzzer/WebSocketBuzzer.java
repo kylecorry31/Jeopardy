@@ -20,7 +20,7 @@ public class WebSocketBuzzer implements Buzzer {
      */
     public WebSocketBuzzer(Session session) {
         this.session = Objects.requireNonNull(session);
-        setState(BuzzerState.DISCONNECTED);
+        state = BuzzerState.DISCONNECTED;
     }
 
     @Override
@@ -36,8 +36,6 @@ public class WebSocketBuzzer implements Buzzer {
             case BUZZED_IN:
                 send(WebSocketMessages.BUZZER_BUZZED_IN);
                 break;
-            default:
-                send(WebSocketMessages.BUZZER_DISCONNECTED);
         }
     }
 

@@ -20,7 +20,7 @@ public class WebSocketHost implements Host {
      */
     public WebSocketHost(Session session) {
         this.session = Objects.requireNonNull(session);
-        setState(HostState.DISCONNECTED);
+        this.state = HostState.DISCONNECTED;
     }
 
     @Override
@@ -36,8 +36,6 @@ public class WebSocketHost implements Host {
             case PLAYER_BUZZED_IN:
                 send(WebSocketMessages.HOST_PLAYER_BUZZED_IN);
                 break;
-            default:
-                send(WebSocketMessages.HOST_DISCONNECTED);
         }
     }
 
