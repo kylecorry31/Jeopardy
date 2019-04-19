@@ -1,6 +1,7 @@
 package com.kylecorry.jeopardy.sockethandlers;
 
 import com.kylecorry.jeopardy.game.JeopardyGame;
+import com.kylecorry.jeopardy.game.WebSocketMessages;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -33,7 +34,7 @@ public class BuzzerWebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session user, String message) {
-        if (message.equalsIgnoreCase("buzz")){
+        if (message.equalsIgnoreCase(WebSocketMessages.CLIENT_REQUEST_BUZZ)){
             System.out.println("Someone buzzed in");
             game.buzzIn(makeWebSocketBuzzer(user));
         }

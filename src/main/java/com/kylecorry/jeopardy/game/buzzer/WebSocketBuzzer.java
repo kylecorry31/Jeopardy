@@ -41,6 +41,9 @@ public class WebSocketBuzzer implements Buzzer {
 
     @Override
     public BuzzerState getState() {
+        if (state != BuzzerState.DISCONNECTED){
+            send(WebSocketMessages.PING);
+        }
         return state;
     }
 

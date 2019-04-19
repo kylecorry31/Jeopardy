@@ -13,9 +13,9 @@ public class JeopardyGame {
 
     private static final long MILLIS_PER_SECOND = 1000;
 
-    private List<Host> hosts;
-    private List<Buzzer> buzzers;
-    private GameState gameState;
+    protected List<Host> hosts;
+    protected List<Buzzer> buzzers;
+    protected GameState gameState;
     private static Timer buzzExpirationTimer;
     private final long answerTime;
 

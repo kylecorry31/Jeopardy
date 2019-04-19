@@ -41,6 +41,9 @@ public class WebSocketHost implements Host {
 
     @Override
     public HostState getState() {
+        if (state != HostState.DISCONNECTED){
+            send(WebSocketMessages.PING);
+        }
         return state;
     }
 

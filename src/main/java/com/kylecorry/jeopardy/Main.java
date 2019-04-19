@@ -1,6 +1,7 @@
 package com.kylecorry.jeopardy;
 
 import com.kylecorry.jeopardy.game.JeopardyGame;
+import com.kylecorry.jeopardy.game.PingingJeopardyGame;
 import com.kylecorry.jeopardy.sockethandlers.BuzzerWebSocketHandler;
 import com.kylecorry.jeopardy.sockethandlers.HostWebSocketHandler;
 
@@ -16,6 +17,7 @@ import static spark.Spark.*;
 public class Main {
 
     private static final long ANSWER_TIME = 6;
+    private static final long PING_TIME = 2;
     private static final int DEFAULT_PORT = 8080;
     private static final String HOST_ENDPOINT = "/admin";
     private static final String BUZZER_ENDPOINT = "/play";
@@ -30,7 +32,7 @@ public class Main {
         }
 
         staticFileLocation(STATIC_WEB_FOLDER);
-        JeopardyGame game = new JeopardyGame(ANSWER_TIME);
+        JeopardyGame game = new PingingJeopardyGame(ANSWER_TIME, PING_TIME);
         BuzzerWebSocketHandler buzzerWebSocketHandler = new BuzzerWebSocketHandler(game);
         HostWebSocketHandler hostWebSocketHandler = new HostWebSocketHandler(game);
         webSocket(BUZZER_ENDPOINT, buzzerWebSocketHandler);

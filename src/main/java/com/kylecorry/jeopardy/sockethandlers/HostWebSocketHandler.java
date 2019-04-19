@@ -1,6 +1,7 @@
 package com.kylecorry.jeopardy.sockethandlers;
 
 import com.kylecorry.jeopardy.game.JeopardyGame;
+import com.kylecorry.jeopardy.game.WebSocketMessages;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -32,10 +33,10 @@ public class HostWebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session user, String message) {
-        if (message.equalsIgnoreCase("lock")){
+        if (message.equalsIgnoreCase(WebSocketMessages.CLIENT_REQUEST_LOCK)){
             System.out.println("Buzzers locked");
             game.lockBuzzers();
-        } else if (message.equalsIgnoreCase("unlock")){
+        } else if (message.equalsIgnoreCase(WebSocketMessages.CLIENT_REQUEST_UNLOCK)){
             System.out.println("Buzzers unlocked");
             game.unlockBuzzers();
         }
